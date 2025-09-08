@@ -1,0 +1,109 @@
+package tdamaquinaempaquetadora;
+
+/**
+ *
+ * @author catherin_cubides
+ */
+public class MaquinaEmpaquetadora {
+    
+    private int capacidadMaxima;
+    private int contadorActual;
+    private String tipoProducto;
+    private String nombreEmpresa;
+    private int stockInicial;
+    private int stockActual;
+
+    public MaquinaEmpaquetadora(String empresa, int capacidad, String tipo, int stock) {
+        this.nombreEmpresa = empresa;
+        this.capacidadMaxima = capacidad;
+        this.tipoProducto = tipo;
+        this.stockInicial = stock;
+        this.stockActual = stock;
+        this.contadorActual = 0;
+    }
+
+    public void agregarProducto(int cantidad) {
+        if (cantidad <= 0) {
+            System.out.println("La cantidad debe ser mayor a cero.");
+            return;
+        }
+        
+        if (stockActual < cantidad) {
+            System.out.println("¡Stock insuficiente! Solo hay " + stockActual + " unidades disponibles.");
+            return;
+        }
+        
+        int espacioDisponible = capacidadMaxima - contadorActual;
+        int cantidadAAgregar = Math.min(cantidad, espacioDisponible);
+        
+        if (cantidadAAgregar < cantidad) {
+            System.out.println("Solo se pueden agregar " + cantidadAAgregar + " unidades para completar el paquete.");
+        }
+        
+        contadorActual += cantidadAAgregar;
+        stockActual -= cantidadAAgregar;
+        
+        System.out.println("✓ Se agregaron " + cantidadAAgregar + " " + tipoProducto);
+        System.out.println("📦 Paquete actual: " + contadorActual + "/" + capacidadMaxima);
+        System.out.println("📊 Stock restante: " + stockActual + " unidades");
+        
+        verificarPaqueteCompleto();
+    }
+
+    private void verificarPaqueteCompleto() {
+        if (contadorActual == capacidadMaxima) {
+            mostrarEtiquetaCompleto();
+        }
+    }
+
+    private void mostrarEtiquetaCompleto() {
+        System.out.println("\n" + "═".repeat(50));
+        System.out.println("🏷️  ETIQUETA DE PRODUCTO - " + nombreEmpresa.toUpperCase());
+        System.out.println("═".repeat(50));
+        System.out.println("📦 PRODUCTO: " + tipoProducto);
+        System.out.println("🔢 CANTIDAD: " + capacidadMaxima + " unidades");
+        System.out.println("✅ ESTADO: PAQUETE COMPLETO");
+        System.out.println("🏭 EMPRESA: " + nombreEmpresa);
+        System.out.println("═".repeat(50) + "\n");
+    }
+
+    public boolean estaPaqueteListo() {
+        return contadorActual == capacidadMaxima;
+    }
+
+    public void empaquetar() {
+        if (estaPaqueteListo()) {
+            System.out.println("📦 Empaquetando " + capacidadMaxima + " " + tipoProducto + "...");
+            System.out.println("🚚 ¡Paquete listo para transportar!");
+            reiniciar();
+        } else {
+            System.out.println("❌ El paquete no está completo. Faltan " + 
+                             (capacidadMaxima - contadorActual) + " productos.");
+        }
+    }
+
+    public void reiniciar() {
+        contadorActual = 0;
+        System.out.println("🔄 Máquina reiniciada. Lista para nuevo paquete.");
+    }
+
+    public int getStockActual() {
+        return stockActual;
+    }
+
+    public double getPorcentajeCompletado() {
+        return (double) contadorActual / capacidadMaxima * 100;
+    }
+
+    public String obtenerEstado() {
+        return "\n=== ESTADO ACTUAL ===" +
+               "Empresa: " + nombreEmpresa +
+               "Producto: " + tipoProducto +
+               "Stock inicial: " + stockInicial + " unidades" +
+               "Stock actual: " + stockActual + " unidades" +
+               "Paquete actual: " + contadorActual + "/" + capacidadMaxima +
+               "Progreso: " + String.format("%.1f", getPorcentajeCompletado()) + "%" +
+               "Estado: " + (estaPaqueteListo() ? "LISTO PARA EMPAQUETAR" : "EN PROCESO") +
+               "\n====================";
+    }
+}
