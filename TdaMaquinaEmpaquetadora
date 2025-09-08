@@ -1,0 +1,95 @@
+package tdamaquinaempaquetadora;
+
+/**
+ *
+ * @author catherin_cubides
+ */
+import java.util.Scanner;
+public class TdaMaquinaEmpaquetadora {
+
+    public static void main(String[] args) {
+Scanner tda = new Scanner(System.in);
+        
+        System.out.println("SISTEMA DE EMPAQUETADO AUTOMATICO");
+        
+        // Selección de empresa
+        System.out.println("\nSeleccione la empresa:");
+        System.out.println("1.Empresa de Dulces (10 pastillas por paquete)");
+        System.out.println("2.Empresa de Cerveza (6 latas por paquete)");
+        System.out.print("Ingrese su opcion (1-2): ");
+        
+        int opcionEmpresa = tda.nextInt();
+        MaquinaEmpaquetadora maquina = null;
+        
+        // Configuración según la empresa seleccionada
+        if (opcionEmpresa == 1) {
+            System.out.print("Ingresa el stock inicial de pastillas: ");
+            int stock = tda.nextInt();
+            maquina = new MaquinaEmpaquetadora("Dulces S.A.", 10, "pastillas de sabores", stock);
+        } else if (opcionEmpresa == 2) {
+            System.out.print("Ingresa el stock inicial de latas de cerveza: ");
+            int stock = tda.nextInt();
+            maquina = new MaquinaEmpaquetadora("Cervecera Ltda.", 6, "latas de cerveza", stock);
+        } else {
+            System.out.println("Opción invalida. Saliendo del sistema.");
+            System.exit(0);
+        }
+        
+        // Menú principal
+        int opcion;
+        do {
+            System.out.println("\n" + "═".repeat(40));
+            System.out.println("MENU PRINCIPAL - " + maquina.obtenerEstado().split("Empresa: ")[1].split("\n")[0]);
+            System.out.println("═".repeat(40));
+            System.out.println("1. Agregar productos al paquete");
+            System.out.println("2. Empaquetar paquete completo");
+            System.out.println("3. Ver estado actual");
+            System.out.println("4. Reiniciar máquina");
+            System.out.println("5. Salir del sistema");
+            System.out.print("Seleccione una opcion: ");
+            
+            opcion = tda.nextInt();
+            
+            switch (opcion) {
+                case 1:
+                    if (maquina.getStockActual() > 0) {
+                        System.out.print("Ingresa la cantidad de productos a agregar: ");
+                        int cantidad = tda.nextInt();
+                        maquina.agregarProducto(cantidad);
+                    } else {
+                        System.out.println("Stock agotado. No se pueden agregar mas productos.");
+                    }
+                    break;
+                    
+                case 2:
+                    maquina.empaquetar();
+                    break;
+                    
+                case 3:
+                    System.out.println(maquina.obtenerEstado());
+                    break;
+                    
+                case 4:
+                    maquina.reiniciar();
+                    System.out.println("Maquina reiniciada exitosamente.");
+                    break;
+                    
+                case 5:
+                    System.out.println("¡Gracias por usar el sistema de empaquetad, bonito dia!");
+                    break;
+                    
+                default:
+                    System.out.println("Opcion invalida. Intentalo nuevamente.");
+            }
+            
+            // Pausa para mejor visualización
+            if (opcion != 5) {
+                System.out.println("\nPresione Enter para continuar...");
+                tda.nextLine();
+                tda.nextLine();
+            }
+            
+        } while (opcion != 5);
+
+    }
+}
